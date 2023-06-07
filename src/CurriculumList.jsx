@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Collapse, Button } from "antd"
+import { Layout, Collapse, Button, Divider } from "antd"
 import { GetRequest } from "./Fetch";
 import { Link } from "react-router-dom";
 import './App.css';
@@ -9,11 +9,15 @@ const { Panel } = Collapse;
 export default function CurriculumList() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [curriculums, setCurriculums] = useState([]);
+	const [cohorts, setCohorts] = useState([]);
 	const [key, setKey] = useState("7tuiocv");
 	//Initial Load
 	useEffect(() => {
 		setIsLoading(true);
-		GetRequest(apiUrl.url+`/curriculum/GetCurriculums`).then(response => setCurriculums(response));
+		GetRequest(apiUrl.url+`/curriculum/GetCurriculums`).then(response => {
+			setCurriculums(response.item1)
+			setCohorts(response.item2)
+		});
 		console.log(curriculums)
 		setIsLoading(false);
 	}, [])
@@ -46,7 +50,7 @@ export default function CurriculumList() {
 											<Collapse accordion
 												size="small"
 											>
-												{module.curriculumEventTemplates.map(template => (
+												{module.curriculumEvents.map(template => (
 													<Panel
 														key={template.id}
 														header={template.name}
@@ -58,6 +62,21 @@ export default function CurriculumList() {
 										</Panel>
 									</Collapse>
 								))}
+								<Collapse accordion>
+									<Panel
+										header="Cohorts"
+									>
+										{cohorts.map(cohort => (
+											cohort.curriculumId === curriculum.id?
+											<>
+												<p>
+													{cohort.cohort}<Divider type="vertical" /><Link>View Calendar</Link></p>
+											</>
+											:
+											<></>
+										))}
+									</Panel>
+								</Collapse>
 							</Panel>
 						</>
 					))}
