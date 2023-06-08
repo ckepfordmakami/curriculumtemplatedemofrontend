@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Collapse, Button, Divider } from "antd"
+import { Layout, Collapse, Button, Divider, List } from "antd"
 import { GetRequest } from "./Fetch";
 import { Link } from "react-router-dom";
 import './App.css';
@@ -47,18 +47,22 @@ export default function CurriculumList() {
 											key={module.id}
 											header={module.name}
 										>
-											<Collapse accordion
-												size="small"
-											>
-												{module.curriculumEvents.map(template => (
-													<Panel
-														key={template.id}
-														header={template.name}
+											<List
+												itemLayout="horizontal"
+												dataSource={module.curriculumEvents}
+												renderItem={(event) => (
+													<List.Item
+														key={event.id}
 													>
-														<p>{template.description}</p>
-													</Panel>
-												))}
-											</Collapse>
+														<List.Item.Meta 
+															title={event.name}
+															description={event.description}
+														/>
+													</List.Item>
+												)}
+											>
+
+											</List>
 										</Panel>
 									</Collapse>
 								))}
@@ -70,7 +74,7 @@ export default function CurriculumList() {
 											cohort.curriculumId === curriculum.id?
 											<>
 												<p>
-													{cohort.cohort}<Divider type="vertical" /><Link>View Calendar</Link></p>
+													{cohort.cohort}<Divider type="vertical" /><Link to ={"/calendar/"+cohort.cohort}>View Calendar</Link></p>
 											</>
 											:
 											<></>
