@@ -2,18 +2,29 @@ import React, { useEffect, useState } from "react";
 import { Calendar, Popover, Button, Select, Divider } from "antd";
 import { apiUrl } from "./URLs";
 import { GetRequest } from "./Fetch";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 const dayjs = require('dayjs')
 export default function EventCalendar() {
 	const [events, setEvents] = useState([]);
+	const {cohort} = useParams();
 	//const [value, setValue] = useState(() => moment('2017-01-25', ''));
   //const [selectedValue, setSelectedValue] = useState(() => moment('2017-01-25'));
 
 	useEffect(() => {
-		GetRequest(apiUrl.url+"/curriculum/getStudentEventsByCohort/2309MB_MT")
-			.then(response => {
-				console.log(response);
-				setEvents(response)});
+		console.log(cohort);
+		if(cohort !== null && cohort !== undefined) {
+			GetRequest(apiUrl.url+"/curriculum/getStudentEventsByCohort/"+cohort)
+				.then(response => {
+					setEvents(response)
+				});
+		}
+		else{
+			GetRequest(apiUrl.url+"/curriculum/getStudentEventsByCohort/2309MB_MT")
+				.then(response => {
+					setEvents(response)
+				});
+		}
+		
 	},[])
 
 	const onSelect = (date) => {
@@ -30,7 +41,7 @@ export default function EventCalendar() {
 					name:  event.curriculumEventTemplate.name +  " | " 
 						+ new Date(event.eventDate).toLocaleTimeString(), 
 					text: event.curriculumEventTemplate.description,
-					type: event.curriculumEventTemplate.curriculumEventType.name
+					type: event.curriculumEventTemplate.curriculumEvent.curriculumEventType.name
 				});
 			}
 		})
@@ -108,7 +119,9 @@ export default function EventCalendar() {
 			<p><b>Cohorts</b></p>
 			<Select
 				style={{width: 300}}
-				defaultValue="2309MB_MT"
+				defaultValue={cohort !== undefined && cohort !== null?
+					cohort : "2309MB_MT"	
+				}
 				options={[
 					{ value: "2309MB_MT", label: "2309MB_MT"},
 					{ value: "2309BD_MT", label: "2309BD_MT"},

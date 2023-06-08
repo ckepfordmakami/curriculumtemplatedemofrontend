@@ -13,6 +13,7 @@ function App() {
         <Route path = "/" element = {<CurriculumList />}/>
         <Route path = "/curriculumlist" element = {<CurriculumList />}/>
         <Route path = "/calendar" element = {<EventCalendar />}/>
+        <Route path = "/calendar/:cohort" element = {<EventCalendar />}/>
       </Routes>
     </Router>
   );
